@@ -1,0 +1,452 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<title>Jade Delight</title>
+
+<style>
+
+	body {
+		background-color: #3a7354;
+		color: #345d98;
+	}
+
+	h1 {
+		text-align: center;
+		font-size: 350%;
+		color: #b0dabe;
+		text-shadow: 3px 3px #345d98;
+	}
+
+	form {
+		background-color: #99b1c9;
+		margin: 5%;
+		padding: 15px;
+		box-shadow: -8px 8px #345d98;
+	}
+
+	table {
+		background-color: #b0dabe;
+	}
+
+	th {
+		color: #fff;
+		background-color: #3a7354;
+		font-weight: normal;
+
+	}
+
+	input {
+		display: inline;
+	}
+
+
+	input[type=text] {
+ 		border: 1px solid #345d98;
+	}
+
+	input[type=text]:focus {
+ 		background-color: #eee; 
+ 		border: 1px solid #3a7354;
+	}
+
+	table input[type=text]:focus {
+ 		background-color: #eee; 
+	}
+
+	input[type=submit] {
+ 		background-color: #345d98;
+  		border: none;
+  		color: #fff;
+ 		padding: 15px 30px;
+  		text-decoration: none;
+  		margin: 4px 2px;
+  		cursor: pointer;
+	}
+
+	input[type=button] {
+ 		background-color: #345d98;
+  		border: none;
+  		color: #fff;
+ 		padding: 15px 30px;
+  		text-decoration: none;
+  		margin: 4px 2px;
+  		cursor: pointer;
+	}
+
+	#nameERR{
+		display: inline;
+		color: #d0302b;
+	}
+
+	#phoneERR{
+		display: inline;
+		color: #d0302b;
+	}
+
+	#streetERR{
+		display: inline;
+		color: #d0302b;
+	}
+
+	#cityERR{
+		display: inline;
+		color: #d0302b;
+	}
+
+	.address {
+		display: none;
+	}
+
+	/*
+	jade: #3a7354
+	mint: #b0dabe
+	yellow: #eed147
+	dark blue: #345d98
+	power blue: #99b1c9
+	red: #d0302b
+	*/
+
+</style>
+
+
+</head>
+
+<body>
+<script language="javascript">
+
+function MenuItem(name, cost)
+{
+	this.name = name;
+	this.cost=cost;
+}
+
+menuItems = new Array(
+	new MenuItem("Chicken Chop Suey", 4.5),
+	new MenuItem("Sweet and Sour Pork", 6.25),
+	new MenuItem("Shrimp Lo Mein", 5.25),
+	new MenuItem("Moo Shi Chicken", 6.5),
+	new MenuItem("Fried Rice", 2.35)
+);
+
+function makeSelect(name, minRange, maxRange)
+{
+	var t= "";
+	t = "<select name='" + name + "' size='1'>";
+	for (j=minRange; j<=maxRange; j++)
+	   t += "<option>" + j + "</option>";
+	t+= "</select>"; 
+	return t;
+}
+</script>
+
+<script>
+
+function CalcTotal() {
+
+	subtotal = 0;
+
+	for(i = 0; i < 5; i++){
+		numItem = document.getElementsByName('quan' + i);
+		b = document.getElementsByName('cost')[i];
+		answer = (numItem[0].value * menuItems[i].cost);
+		b.value = answer.toFixed(2);
+		subtotal += parseFloat(answer.toFixed(2));
+	}
+
+	st = document.getElementById("subtotal");
+	st.value = subtotal.toFixed(2);
+
+	tax = subtotal * .00625;
+	tx = document.getElementById("tax");
+	tx.value = tax.toFixed(2);
+
+	total = subtotal + tax;
+	t = document.getElementById("total");
+	t.value = total.toFixed(2);
+}
+
+function writeErr(message, id){
+
+	writeTo = document.getElementById(id);
+	writeTo.innerHTML = message;
+
+}
+
+function valPhone(number){
+
+	var digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+	var counter = 0;
+
+	length = number.length;
+
+	for(i = 0; i < length; i++){
+		if(digits.includes(number[i])){
+			counter++;
+		}
+	}
+
+	errorMessage = "";
+	if(counter != 10){
+		errorMessage = "ERROR: Phone number must have 9 digits";
+	}
+
+	if(counter == 10){
+		writeErr(errorMessage, "phoneERR");
+		return true;
+	}else{
+		writeErr(errorMessage, "phoneERR");
+		return false;
+	}
+}
+
+function valName(lastName) {
+	errorMessage = "";
+	if(lastName == ""){
+		errorMessage = "ERROR: Must enter last name";
+		writeErr(errorMessage, "nameERR");
+		return false;
+	}else{
+		writeErr("", "nameERR");
+		return true;
+	}
+}
+
+function valStreet(lastName) {
+	errorMessage = "";
+	if(lastName == ""){
+		errorMessage = "ERROR: Must enter street name";
+		writeErr(errorMessage, "streetERR");
+		return false;
+	}else{
+		writeErr("", "streetERR");
+		return true;
+	}
+}
+
+function valCity(lastName) {
+	errorMessage = "";
+	if(lastName == ""){
+		errorMessage = "ERROR: Must enter city name";
+		writeErr(errorMessage, "cityERR");
+		return false;
+	}else{
+		writeErr("", "cityERR");
+		return true;
+	}
+}
+
+function validate()
+{
+	lastName = document.getElementsByName('lname')[0].value;
+	phoneNumber = document.getElementsByName('phone')[0].value;
+	street = document.getElementsByName('street')[0].value;
+	city = document.getElementsByName('city')[0].value;
+
+	output = true;
+
+	test1 = valPhone(phoneNumber);
+	test2 = valName(lastName);
+
+	output = (test1 && test2);
+
+	pickup = true;
+	p = document.getElementsByName("p_or_d");
+	if(p[0].checked == true){
+		pickup = true;
+	}else if(p[1].checked == true){
+		pickup = false;
+	}
+
+	if(pickup == true){
+		return output;
+	}else{
+		test1 = valStreet(street);
+		test2 = valCity(city);
+		finalOutput = (test1 && test2 && output);
+		return finalOutput;
+	}
+}
+
+function displayOrder(){
+
+	message = "";
+
+	fName = document.getElementsByName('fname')[0].value;
+	lName = document.getElementsByName('lname')[0].value;
+	if(fName != ""){
+		fName += " ";
+	}
+	message += "Thank you " + fName + lName;
+	//message += " for your order!<br><br>";
+	message += " for your order!\n\n";
+
+	CalcTotal();
+
+	//message += "Order:<br>"
+	message += "Order:\n"
+	for(i = 0; i < 5; i++){
+		numItem = document.getElementsByName('quan' + i);
+		val = numItem[0].value;
+		if(val != 0){
+			//message += "(" + val + ") " + menuItems[i].name + "<br>";
+			message += "(" + val + ") " + menuItems[i].name + "\n";
+		}
+	}
+
+	total = document.getElementById('total');
+	//message += "Total: $" + total.value + "<br><br>";
+	message += "Total: $" + total.value + "\n\n";
+
+
+	pickupTime = 0;
+	pickupMessage = "";
+	p = document.getElementsByName("p_or_d");
+	if(p[0].checked == true){
+		pickupTime += 15;
+		pickupMessage = "Pickup will be ready at ";
+	}else if(p[1].checked == true){
+		pickupTime += 30;
+		pickupMessage = "Order will be delivered at ";
+	}
+
+	var dt = new Date();
+	hours = dt.getHours();
+	min = dt.getMinutes();
+	min = min + pickupTime;
+	if(min >= 60){
+		min = min - 60;
+		if(min < 10){
+			min = "0" + min;
+		}
+		hours++;
+	}
+	if(hours >= 24){
+		hours == 0;
+	}
+	var time = hours + ":" + min;
+	//message += pickupMessage + time + "<br>";
+	message += pickupMessage + time + "\n";
+
+	// var finalMessage = HTML + "<body><h1>Jade Delight Order</h1><form><p>" + message + "</p><form></body";
+	// newWindowObj = window.open('about:blank', '_blank');
+	// newWindowObj.document.write(finalMessage);
+	alert(message);
+}
+
+function toggelAddress() {
+  cityErr = document.getElementById("cityERR");
+  streetErr = document.getElementById("streetERR");
+  var x = document.getElementsByClassName('address');
+  if (x[0].style.display == "none") {
+    x[0].style.display = "block";
+    x[1].style.display = "block";
+    cityErr.style.display = "block";
+    streetErr.style.display = "block";
+  } else {
+  	x[0].style.display = "none";
+  	x[1].style.display = "none";
+  	cityErr.style.display = "none";
+    streetErr.style.display = "none";
+  }
+}
+
+window.onload = function() {
+
+	for(i = 0; i < 5; i++){
+		numItem = document.getElementsByName('quan' + i);
+		numItem[0].onchange = function(){
+			CalcTotal();
+		}
+	}
+
+	toggelAddress();
+
+	b = document.getElementsByName("p_or_d");
+	b[0].onchange = function() {
+		toggelAddress();
+	}
+	b[1].onchange = function() {
+		toggelAddress();
+	}
+
+	document.forms[0].onsubmit = function(){
+		correct = validate();
+		t = document.getElementById("total").value;
+
+
+		if(correct == true && t != 0){
+			f = document.forms[0];
+			f.style.boxShadow = "-8px 8px #345d98";
+			displayOrder();
+		}else if(correct == true && t == 0){
+			f = document.forms[0];
+			f.style.boxShadow = "-8px 8px #345d98";
+			alert("ERROR: Please Select Items from Menu before continuing");
+			event.preventDefault();
+		}else if(correct == false && t == 0){
+			alert("ERROR: Please Correct The Following Fields and Select Items from Menu before continuing");
+			f = document.forms[0];
+			f.style.boxShadow = "-8px 8px #d0302b";
+			event.preventDefault();
+
+		}else{
+			alert("ERROR: Please Correct The Following Fields");
+			f = document.forms[0];
+			f.style.boxShadow = "-8px 8px #d0302b";
+			event.preventDefault();
+		}
+	}
+}
+
+</script>
+
+<h1>Jade Delight</h1>
+<form action="https://www.w3schools.com/tags/att_form_action.asp">
+
+<p>First Name: <input type="text"  name='fname' /></p>
+<p>Last Name*:  <input type="text"  name='lname' /></p><div id='nameERR'></div>
+<p class="address">Street: <input type="text"  name='street' /></p><div id='streetERR'></div>
+<p class="address">City: <input type="text"  name='city' /></p><div id='cityERR'></div>
+<p>Phone*: <input type="text"  name='phone' /></p><div id='phoneERR'></div>
+<p> 
+	<input type="radio"  name="p_or_d" value = "pickup" checked="checked"/>Pickup  
+	<input type="radio"  name='p_or_d' value = 'delivery'/>
+	Delivery
+</p>
+<table border="0" cellpadding="3">
+  <tr>
+    <th>Select Item</th>
+    <th>Item Name</th>
+    <th>Cost Each</th>
+    <th>Total Cost</th>
+  </tr>
+<script language="javascript"> 
+
+  var s = "";
+  for (i=0; i< menuItems.length; i++)
+  {
+	  s += "<tr><td>";
+	  s += makeSelect("quan" + i, 0, 10);
+	  s += "</td><td>" + menuItems[i].name + "</td>";
+	  s += "<td> $ " + menuItems[i].cost.toFixed(2) + "</td>";
+	  s += "<td>$<input type='text' name='cost'/></td></tr>";
+  }
+  document.writeln(s);
+</script>
+</table>
+<p>Subtotal: 
+   $<input type="text"  name='subtotal' id="subtotal" />
+</p>
+<p>Mass tax 6.25%:
+  $ <input type="text"  name='tax' id="tax" />
+</p>
+<p>Total: $ <input type="text"  name='total' id="total" />
+</p>
+
+<input type = "submit" value = "Submit Order" />
+
+</form>
+</body>
+</html>
